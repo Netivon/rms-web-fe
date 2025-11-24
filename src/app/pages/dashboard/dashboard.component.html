@@ -1,0 +1,8 @@
+<app-navbar
+  [menuItems]="menuItems()"
+  [currentView]="currentView()"
+  [user]="currentUser()"
+  (selectView)="setView($event)"
+  (logout)="logout()"
+>
+</app-navbar>
