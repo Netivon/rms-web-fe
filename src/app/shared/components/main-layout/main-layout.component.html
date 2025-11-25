@@ -1,0 +1,22 @@
+<div class="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+
+  <app-navbar
+    class="sticky top-0 z-50" 
+    [menuItems]="menuItems"
+    [user]="currentUser"
+    [currentView]="currentView"
+    (selectView)="handleViewSelection($event)"
+    (logout)="handleLogout()">
+  </app-navbar>
+
+  <main class="flex w-full p-2 md:p-6 fade-in">
+    <ng-content></ng-content>
+  </main>
+
+  <footer class="footer footer-center p-4 bg-white dark:bg-base-300 text-gray-800 dark:text-base-content mt-auto">
+    <aside>
+      <p>Copyright © {{ currentYear }} - All right reserved</p>
+    </aside>
+  </footer>
+
+</div>

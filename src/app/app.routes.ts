@@ -22,8 +22,8 @@ export const routes: Routes = [
   { path: 'payments', component: PaymentsComponent },
   { path: 'maintenance', component: MaintenanceComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'landlordDashboard', component: LandlordDashboardComponent },
-  { path: 'landlordPropeties', component: PropertiesListComponent },
+  { path: 'landlord/dashboard', component: LandlordDashboardComponent },
+  { path: 'landlord/propeties', component: PropertiesListComponent },
   { path: '**', redirectTo: 'login' },
 ];
 

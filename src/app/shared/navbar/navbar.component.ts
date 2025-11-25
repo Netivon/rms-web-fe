@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from '../model/menuItem';
 import { User } from '../model/user';
-import { ThemeToggleComponent } from "../../components/theme-toggle/theme-toggle.component";
+import { ThemeToggleComponent } from "../components/theme-toggle/theme-toggle.component";
 import { Router } from '@angular/router';
 
 @Component({
@@ -28,19 +28,14 @@ export class NavbarComponent {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
-  handleNav(id: string) {
-    this.selectView.emit(id);
-    this.isMenuOpen = false; // Close menu on selection
-  }
+  // handleNav(id: string) {
+  //   this.selectView.emit(id);
+  //   this.isMenuOpen = false; // Close menu on selection
+  // }
 
-   handleLogout() {
-    // Emit the logout event to parent component (for cleanup)
+  handleLogout() {
     this.logout.emit();
-    
-    // Navigate to login page
     this.router.navigate(['/login']);
-    
-    // Close mobile menu if open
     this.isMenuOpen = false;
   }
 }
