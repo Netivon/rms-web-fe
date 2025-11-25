@@ -8,3 +8,22 @@ body {
   height: 100%;
   margin: 0;
 }
+
+@layer components {
+  /* Now @apply works perfectly here because it has full context */
+  .stat,
+  .card-body,
+  .input,
+  .select,
+  figure,
+  .modal-box,
+  textarea {
+    @apply bg-white dark:bg-base-100;
+  }
+  
+  .stat-title,
+  .stat-desc,
+  th {
+    @apply text-gray-800 dark:text-gray-400;
+  }
+}

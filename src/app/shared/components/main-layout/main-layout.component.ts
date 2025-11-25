@@ -11,7 +11,7 @@ import { NavbarComponent } from '../../navbar/navbar.component';
   // Import your specific NavbarComponent here
   imports: [CommonModule, NavbarComponent], 
   templateUrl: './main-layout.component.html',
-  styleUrls: ['./main-layout.component.scss'] // or .css
+  styleUrls: ['./main-layout.component.css']
 })
 export class MainLayoutComponent {
   // --- Inputs passed down to the Navbar ---

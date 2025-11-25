@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LandlordDashboardComponent } from './landlord-dashboard.component';
+import { provideRouter } from '@angular/router';
 
 describe('LandlordDashboardComponent', () => {
   let component: LandlordDashboardComponent;
@@ -8,7 +9,10 @@ describe('LandlordDashboardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LandlordDashboardComponent]
+      imports: [LandlordDashboardComponent],
+      providers: [
+        provideRouter([]) 
+      ]
     })
     .compileComponents();
 
