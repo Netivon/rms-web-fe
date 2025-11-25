@@ -9,6 +9,8 @@ import { TenanciesComponent } from './pages/tenancies/tenancies.component';
 import { PaymentsComponent } from './pages/payments/payments.component';
 import { MaintenanceComponent } from './pages/maintenance/maintenance.component';
 import { LoginComponent } from './pages/login/login.component';
+import { LandlordDashboardComponent } from './pages/LANDLORD/landlord-dashboard/landlord-dashboard.component';
+import { PropertiesListComponent } from './pages/LANDLORD/properties-list/properties-list.component';
 
 export const routes: Routes = [
 //   { path: '', component: HomeComponent }, // Default route
@@ -20,6 +22,8 @@ export const routes: Routes = [
   { path: 'payments', component: PaymentsComponent },
   { path: 'maintenance', component: MaintenanceComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'landlordDashboard', component: LandlordDashboardComponent },
+  { path: 'landlordPropeties', component: PropertiesListComponent },
   { path: '**', redirectTo: 'login' },
 ];
 

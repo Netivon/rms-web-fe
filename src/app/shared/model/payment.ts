@@ -1,8 +1,9 @@
 export interface Payment {
   id: string;
-  tenantId: string;
+  tenancy_id: string;
   amount: number;
-  date: Date;
+  due_date: Date;
+  paid_date?: Date;
   status: 'PAID' | 'PENDING' | 'OVERDUE';
   month: string;
 }
