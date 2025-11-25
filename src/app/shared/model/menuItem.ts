@@ -1,5 +1,6 @@
 export interface MenuItem {
   id: string;
   label: string;
-  icon: string;
+  route?: string; // Added this so the router knows where to go
+  icon?: string;
 }

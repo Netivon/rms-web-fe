@@ -3,7 +3,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from '../model/menuItem';
 import { User } from '../model/user';
-import { ThemeToggleComponent } from "../../components/theme-toggle/theme-toggle.component";
+import { ThemeToggleComponent } from "../components/theme-toggle/theme-toggle.component";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -21,12 +22,20 @@ export class NavbarComponent {
 
   isMenuOpen = false;
 
+  constructor(private router: Router) {}
+
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
-  handleNav(id: string) {
-    this.selectView.emit(id);
-    this.isMenuOpen = false; // Close menu on selection
+  // handleNav(id: string) {
+  //   this.selectView.emit(id);
+  //   this.isMenuOpen = false; // Close menu on selection
+  // }
+
+  handleLogout() {
+    this.logout.emit();
+    this.router.navigate(['/login']);
+    this.isMenuOpen = false;
   }
 }

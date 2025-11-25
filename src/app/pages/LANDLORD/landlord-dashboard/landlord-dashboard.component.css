@@ -1,0 +1,10 @@
+.stat,
+.card-body {
+  @apply bg-white dark:bg-base-100;
+}
+
+.stat-title,
+.stat-desc,
+th {
+  @apply text-gray-800 dark:text-gray-400;
+}

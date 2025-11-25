@@ -36,9 +36,10 @@ export class DashboardComponent {
     // } else if (role === 'LANDLORD') {
        return [
         ...base,
-        { id: 'properties', label: 'My Properties', icon: this.getIcon('building') },
-        { id: 'requests', label: 'Requests', icon: this.getIcon('tool') },
-        { id: 'financials', label: 'Financials', icon: this.getIcon('wallet') },
+        { id: 'tenancies', label: 'Tenancies', icon: this.getIcon('building') },
+        { id: 'properties', label: 'Properties', icon: this.getIcon('tool') },
+        { id: 'payments', label: 'Payments', icon: this.getIcon('wallet') },
+        { id: 'maintenance', label: 'Maintenance', icon: this.getIcon('tool') },
       ];
     // } else {
     //    return [

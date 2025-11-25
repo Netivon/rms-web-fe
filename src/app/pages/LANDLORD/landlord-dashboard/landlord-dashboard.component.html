@@ -1,0 +1,337 @@
+<app-main-layout
+  [menuItems]="myNavItems"
+  [currentUser]="currentUser()"
+  [currentView]="'dashboard'"
+  (logout)="logout()"
+  (viewSelect)="setView($event)"
+>
+  <!-- Main Content -->
+  <div class="container">
+    <!-- Stats Cards -->
+    <!-- Update the stat-desc sections in your HTML -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="stat bg-base-100 rounded-lg shadow">
+        <div class="stat-figure text-primary">
+          <svg
+            class="w-8 h-8"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+            ></path>
+          </svg>
+        </div>
+        <div class="stat-title">Total Properties</div>
+        <div class="stat-value text-primary">{{ stats.totalProperties }}</div>
+        <div class="stat-desc">{{ vacantPropertiesCount }} vacant</div>
+      </div>
+
+      <div class="stat bg-base-100 rounded-lg shadow">
+        <div class="stat-figure text-secondary">
+          <svg
+            class="w-8 h-8"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+            ></path>
+          </svg>
+        </div>
+        <div class="stat-title">Active Tenancies</div>
+        <div class="stat-value text-secondary">{{ stats.activeTenancies }}</div>
+        <div class="stat-desc">{{ upcomingTenanciesCount }} upcoming</div>
+      </div>
+
+      <div class="stat bg-base-100 rounded-lg shadow">
+        <div class="stat-figure text-accent">
+          <svg
+            class="w-8 h-8"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+            ></path>
+          </svg>
+        </div>
+        <div class="stat-title">Pending Requests</div>
+        <div class="stat-value text-accent">{{ stats.pendingRequests }}</div>
+        <div class="stat-desc">
+          {{ highPriorityRequestsCount }} high priority
+        </div>
+      </div>
+
+      <div class="stat bg-base-100 rounded-lg shadow">
+        <div class="stat-figure text-info">
+          <svg
+            class="w-8 h-8"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+            ></path>
+          </svg>
+        </div>
+        <div class="stat-title">Monthly Revenue</div>
+        <div class="stat-value text-info">${{ stats.monthlyRevenue }}</div>
+        <div class="stat-desc">From active tenancies</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Properties Section -->
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="card-title">My Properties</h2>
+            <button class="btn btn-primary btn-sm">View All</button>
+          </div>
+          <div class="space-y-4">
+            <div
+              *ngFor="let property of properties"
+              class="border rounded-lg p-4"
+            >
+              <div class="flex justify-between items-start">
+                <div>
+                  <h3 class="font-semibold">{{ property.title }}</h3>
+                  <p class="text-sm text-gray-600">{{ property.address }}</p>
+                  <p class="text-sm">
+                    Default Rent: ${{ property.default_rent_amount }}/month
+                  </p>
+                </div>
+                <div
+                  [class]="{
+                    'badge badge-success': property.status === 'OCCUPIED',
+                    'badge badge-warning': property.status === 'VACANT',
+                    'badge badge-error': property.status === 'MAINTENANCE'
+                  }"
+                >
+                  {{ property.status }}
+                </div>
+              </div>
+              <div class="mt-2 flex justify-between items-center">
+                <span
+                  class="text-sm text-warning"
+                  *ngIf="getPropertyPendingRequests(property.id) > 0"
+                >
+                  {{ getPropertyPendingRequests(property.id) }} pending requests
+                </span>
+                <span
+                  class="text-sm text-success"
+                  *ngIf="getPropertyPendingRequests(property.id) === 0"
+                >
+                  No pending requests
+                </span>
+                <button class="btn btn-ghost btn-xs">Manage</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Payments Section -->
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="card-title">Recent Payments</h2>
+            <button class="btn btn-primary btn-sm">View All</button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="table table-zebra">
+              <thead>
+                <tr>
+                  <th>Month</th>
+                  <th>Amount</th>
+                  <th>Due Date</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let payment of payments">
+                  <td>
+                    <div class="font-semibold">{{ payment.month }}</div>
+                    <div class="text-xs text-gray-500">
+                      Tenancy #{{ payment.tenancy_id }}
+                    </div>
+                  </td>
+                  <td class="font-semibold">${{ payment.amount }}</td>
+                  <td>
+                    <div class="text-sm">
+                      {{ payment.due_date | date : "MMM d, y" }}
+                    </div>
+                    <div
+                      class="text-xs text-gray-500"
+                      *ngIf="payment.status === 'PENDING'"
+                    >
+                      {{ getDaysUntilDue(payment) }} days left
+                    </div>
+                  </td>
+                  <td>
+                    <span
+                      [class]="{
+                        'badge badge-success': payment.status === 'PAID',
+                        'badge badge-error': payment.status === 'OVERDUE',
+                        'badge badge-warning': payment.status === 'PENDING'
+                      }"
+                    >
+                      {{ payment.status }}
+                    </span>
+                    <div
+                      class="text-xs text-gray-500 mt-1"
+                      *ngIf="payment.paid_date"
+                    >
+                      Paid: {{ payment.paid_date | date : "MMM d" }}
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Tenancies Section -->
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="card-title">Active Tenancies</h2>
+            <button class="btn btn-primary btn-sm">View All</button>
+          </div>
+          <div class="space-y-4">
+            <div
+              *ngFor="let tenancy of tenancies"
+              class="border rounded-lg p-4"
+            >
+              <div class="flex justify-between items-start">
+                <div>
+                  <h3 class="font-semibold">Tenancy #{{ tenancy.id }}</h3>
+                  <p class="text-sm text-gray-600">
+                    Property: {{ getPropertyAddress(tenancy.property_id) }}
+                  </p>
+                  <p class="text-sm">Rent: ${{ tenancy.rent_amount }}/month</p>
+                </div>
+                <div class="text-right">
+                  <div
+                    [class]="{
+                      'badge badge-success': tenancy.status === 'ACTIVE',
+                      'badge badge-warning': tenancy.status === 'UPCOMING',
+                      'badge badge-error': tenancy.status === 'ENDED'
+                    }"
+                  >
+                    {{ tenancy.status }}
+                  </div>
+                  <div
+                    class="text-xs mt-1"
+                    [class.text-success]="
+                      tenancy.previous_rent_amount &&
+                      tenancy.rent_amount > tenancy.previous_rent_amount
+                    "
+                    [class.text-gray-500]="
+                      !tenancy.previous_rent_amount ||
+                      tenancy.rent_amount <= tenancy.previous_rent_amount
+                    "
+                  >
+                    <span *ngIf="tenancy.previous_rent_amount">
+                      {{ getRentIncrease(tenancy) > 0 ? "+" : ""
+                      }}{{ getRentIncrease(tenancy) | number : "1.0-1" }}%
+                    </span>
+                    <span *ngIf="!tenancy.previous_rent_amount">New</span>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-2 flex justify-between items-center text-sm">
+                <span
+                  >Lease: {{ tenancy.lease_start | date : "MMM y" }} -
+                  {{ tenancy.lease_end | date : "MMM y" }}</span
+                >
+                <button class="btn btn-ghost btn-xs">Details</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Maintenance Section -->
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="card-title">Pending Maintenance</h2>
+            <button class="btn btn-primary btn-sm">View All</button>
+          </div>
+          <div class="space-y-4">
+            <div
+              *ngFor="let request of maintenanceRequests"
+              class="border rounded-lg p-4"
+            >
+              <div class="flex justify-between items-start">
+                <div>
+                  <h3 class="font-semibold">{{ request.title }}</h3>
+                  <p class="text-sm text-gray-600">
+                    {{ getPropertyAddressFromTenancy(request.tenancy_id) }}
+                  </p>
+                  <p class="text-sm mt-1">{{ request.description }}</p>
+                </div>
+                <div class="text-right">
+                  <div
+                    [class]="{
+                      'badge badge-warning': request.status === 'PENDING',
+                      'badge badge-info': request.status === 'IN_PROGRESS',
+                      'badge badge-success': request.status === 'RESOLVED'
+                    }"
+                  >
+                    {{ request.status }}
+                  </div>
+                  <div
+                    class="mt-1"
+                    [class]="getPriorityBadgeClass(request.priority)"
+                  >
+                    {{ request.priority }}
+                  </div>
+                </div>
+              </div>
+              <div class="mt-2 flex justify-between items-center text-sm">
+                <span
+                  >Submitted: {{ request.created_at | date : "MMM d, y" }}</span
+                >
+                <div>
+                  <button
+                    class="btn btn-primary btn-xs mr-2"
+                    *ngIf="request.status === 'PENDING'"
+                  >
+                    Start Work
+                  </button>
+                  <button
+                    class="btn btn-success btn-xs"
+                    *ngIf="request.status === 'IN_PROGRESS'"
+                  >
+                    Mark Resolved
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</app-main-layout>
