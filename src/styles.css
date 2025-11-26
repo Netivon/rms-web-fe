@@ -12,11 +12,11 @@ body {
   margin: 0;
 }
 main {
-  @apply bg-gradient-to-br from-blue-50 to-indigo-100 transition-colors duration-300;
+  @apply bg-linear-to-br from-blue-50 to-indigo-100 transition-colors duration-300;
 }
 
 .dark main {
-  @apply bg-gradient-to-br from-gray-900 to-gray-800;
+  @apply bg-linear-to-br from-gray-900 to-gray-800;
 }
 
 @layer components {
@@ -29,7 +29,9 @@ main {
   .modal-box,
   textarea,
   .NavMenu,
-  nav {
+  nav,
+  footer,
+  .input {
     @apply bg-white;
   }
 
@@ -44,7 +46,9 @@ main {
   .dark .modal-box,
   .dark textarea,
   .dark .NavMenu,
-  .dark nav {
+  .dark nav,
+  .dark footer,
+  .dark .input {
     @apply bg-gray-800;
   }
 
@@ -54,7 +58,9 @@ main {
   h3,
   span,
   select,
-  button {
+  button,
+  .text-title,
+  footer{
     @apply text-gray-800;
   }
 
@@ -64,7 +70,15 @@ main {
   .dark h3,
   .dark span,
   .dark select,
-  .dark button {
+  .dark button,
+  .dark footer {
     @apply text-gray-400;
+  }
+
+  .text-title {
+    @apply text-black;
+  }
+  .dark .text-title {
+    @apply text-white;
   }
 }
