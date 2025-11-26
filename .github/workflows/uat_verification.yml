@@ -1,0 +1,26 @@
+name: UAT VERIFICATION validation checking
+
+on:
+  push:
+    branches: [ "UAT_VERIFICATION" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Angular 18 requires Node 18^ or 20^
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Run Unit Tests
+        run: npm run test -- --no-watch --no-progress --browsers=ChromeHeadless
+
+      - name: Build Application
+        run: npm run build
