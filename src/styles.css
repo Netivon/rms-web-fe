@@ -1,12 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 body {
-  @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300;
-
   height: 100%;
   margin: 0;
+}
+main {
+  @apply bg-gradient-to-br from-blue-50 to-indigo-100 transition-colors duration-300;
+}
+
+.dark {
+  main {
+    @apply bg-gradient-to-br from-gray-900 to-gray-800 transition-colors duration-300;
+  }
 }
 
 @layer components {
@@ -17,32 +23,48 @@ body {
   .select,
   figure,
   .modal-box,
-  textarea {
+  textarea,
+  .NavMenu,
+  nav {
     @apply bg-white;
   }
 
   /* 2. Dark Mode Overrides */
   /* We use the standard CSS selector '.dark' to trigger this */
   /* This bypasses the build error because we aren't using 'dark:' inside @apply */
-  .dark .stat,
-  .dark .card-body,
-  .dark .input,
-  .dark .select,
-  .dark figure,
-  .dark .modal-box,
-  .dark textarea {
-    @apply bg-base-100;
+  .dark {
+    .stat,
+    .card-body,
+    .input,
+    .select,
+    figure,
+    .modal-box,
+    textarea,
+    .NavMenu,
+    nav {
+      @apply bg-gray-800;
+    }
   }
 
   .stat-title,
   .stat-desc,
-  th {
-    @apply text-gray-800 ;
+  th,
+  h3,
+  span,
+  select,
+  button {
+    @apply text-gray-800;
   }
 
-  .dark .stat-title,
-  .dark .stat-desc,
-  .dark th {
-    @apply text-gray-400 ;
+  .dark {
+    .stat-title,
+    .stat-desc,
+    th,
+    h3,
+    span,
+    select,
+    button {
+      @apply text-gray-400;
+    }
   }
 }
