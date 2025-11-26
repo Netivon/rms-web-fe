@@ -1,15 +1,70 @@
-/* -----------------------------------
-   Tailwind Base Styles
--------------------------------------*/
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark;
+}
 
-/* -----------------------------------
-   Global Layout
--------------------------------------*/
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
 body {
   height: 100%;
   margin: 0;
 }
+main {
+  @apply bg-gradient-to-br from-blue-50 to-indigo-100 transition-colors duration-300;
+}
 
+.dark main {
+  @apply bg-gradient-to-br from-gray-900 to-gray-800;
+}
+
+@layer components {
+  /* 1. Default (Light Mode) Styles */
+  .stat,
+  .card-body,
+  .input,
+  .select,
+  figure,
+  .modal-box,
+  textarea,
+  .NavMenu,
+  nav {
+    @apply bg-white;
+  }
+
+  /* 2. Dark Mode Overrides */
+  /* We use the standard CSS selector '.dark' to trigger this */
+  /* This bypasses the build error because we aren't using 'dark:' inside @apply */
+  .dark .stat,
+  .dark .card-body,
+  .dark .input,
+  .dark .select,
+  .dark figure,
+  .dark .modal-box,
+  .dark textarea,
+  .dark .NavMenu,
+  .dark nav {
+    @apply bg-gray-800;
+  }
+
+  .stat-title,
+  .stat-desc,
+  th,
+  h3,
+  span,
+  select,
+  button {
+    @apply text-gray-800;
+  }
+
+  .dark .stat-title,
+  .dark .stat-desc,
+  .dark th,
+  .dark h3,
+  .dark span,
+  .dark select,
+  .dark button {
+    @apply text-gray-400;
+  }
+}
