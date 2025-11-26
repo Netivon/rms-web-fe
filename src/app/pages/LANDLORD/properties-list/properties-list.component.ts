@@ -11,7 +11,7 @@ import { MainLayoutComponent } from "../../../shared/components/main-layout/main
 @Component({
   selector: 'app-properties-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, NavbarComponent, MainLayoutComponent],
+  imports: [CommonModule, FormsModule, MainLayoutComponent],
   templateUrl: './properties-list.component.html',
   styleUrl: './properties-list.component.css',
 })
@@ -229,7 +229,7 @@ export class PropertiesListComponent implements OnInit {
 
   // Navigation Items matching the new Interface
   myNavItems: MenuItem[] = [
-    { id: '1', label: 'Dashaboard', route: '/landlord/dashboard' },
+    { id: '1', label: 'Dashboard', route: '/landlord/dashboard' },
     { id: '2', label: 'Properties', route: '/landlord/propeties' },
     { id: '3', label: 'Tenants', route: '/tenants' },
     { id: '4', label: 'Settings', route: '/settings' },

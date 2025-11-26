@@ -12,7 +12,7 @@ body {
   margin: 0;
 }
 main {
-  @apply bg-linear-to-br from-blue-50 to-indigo-100 transition-colors duration-300;
+  @apply bg-base-100;
 }
 
 .dark main {
@@ -81,4 +81,15 @@ main {
   .dark .text-title {
     @apply text-white;
   }
+
+  /* Light mode main */
+html[data-theme='light'] main {
+  @apply bg-base-100;
+}
+
+/* Dark mode main */
+html[data-theme='dark'] main {
+  @apply bg-base-100;
+}
+
 }
