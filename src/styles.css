@@ -13,12 +13,3 @@ body {
   margin: 0;
 }
 
-/* Light Mode Main Background */
-main {
-  @apply bg-gradient-to-br from-blue-50 to-indigo-100 transition-colors duration-300;
-}
-
-/* Dark Mode Main Background */
-.dark main {
-  @apply bg-gradient-to-br from-gray-900 to-gray-800 transition-colors duration-300;
-}
