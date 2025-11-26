@@ -32,7 +32,7 @@ main {
   nav,
   footer,
   .input {
-    @apply bg-white;
+    @apply bg-base-100;
   }
 
   /* 2. Dark Mode Overrides */
@@ -49,7 +49,7 @@ main {
   .dark nav,
   .dark footer,
   .dark .input {
-    @apply bg-gray-800;
+    @apply bg-base-100;
   }
 
   .stat-title,
@@ -61,7 +61,7 @@ main {
   button,
   .text-title,
   footer{
-    @apply text-gray-800;
+    @apply bg-base-100;
   }
 
   .dark .stat-title,
@@ -76,20 +76,21 @@ main {
   }
 
   .text-title {
-    @apply text-black;
+    @apply bg-base-100;
   }
   .dark .text-title {
-    @apply text-white;
+    @apply bg-base-100;
   }
 
-  /* Light mode main */
+/* Light mode main */
 html[data-theme='light'] main {
-  @apply bg-base-100;
+  @apply bg-linear-to-br from-blue-50 to-indigo-100;
 }
 
 /* Dark mode main */
 html[data-theme='dark'] main {
-  @apply bg-base-100;
+  @apply bg-linear-to-br from-gray-900 to-gray-800;
 }
 
 }
+
