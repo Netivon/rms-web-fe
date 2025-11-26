@@ -12,29 +12,22 @@ export class ThemeService {
   }
 
   updateThemeOnLoad() {
-    // 1. Check local storage first
-    // 2. If nothing in storage, check system preference
-    if (localStorage.getItem('theme') === 'dark' || 
-       (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      this.darkModeSignal.set('dark');
-      document.documentElement.classList.add('dark');
-    } else {
-      this.darkModeSignal.set('light');
-      document.documentElement.classList.remove('dark');
-    }
-  }
+  const storedTheme = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-  toggleTheme() {
-    // Toggle the signal
-    this.darkModeSignal.update(value => (value === 'dark' ? 'light' : 'dark'));
-    
-    // Update the HTML class and Local Storage
-    if (this.darkModeSignal() === 'dark') {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  }
+  const finalTheme =
+    storedTheme === 'dark' || (!storedTheme && prefersDark)
+      ? 'dark'
+      : 'light';
+  this.darkModeSignal.set(finalTheme);
+  document.documentElement.setAttribute('data-theme', finalTheme);
+}
+
+toggleTheme() {
+  const newTheme = this.darkModeSignal() === 'dark' ? 'light' : 'dark';
+  this.darkModeSignal.set(newTheme);
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+}
+
 }
