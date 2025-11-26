@@ -10,7 +10,7 @@ body {
 }
 
 @layer components {
-  /* Now @apply works perfectly here because it has full context */
+  /* 1. Default (Light Mode) Styles */
   .stat,
   .card-body,
   .input,
@@ -18,12 +18,31 @@ body {
   figure,
   .modal-box,
   textarea {
-    @apply bg-white dark:bg-base-100;
+    @apply bg-white;
   }
-  
+
+  /* 2. Dark Mode Overrides */
+  /* We use the standard CSS selector '.dark' to trigger this */
+  /* This bypasses the build error because we aren't using 'dark:' inside @apply */
+  .dark .stat,
+  .dark .card-body,
+  .dark .input,
+  .dark .select,
+  .dark figure,
+  .dark .modal-box,
+  .dark textarea {
+    @apply bg-base-100;
+  }
+
   .stat-title,
   .stat-desc,
   th {
-    @apply text-gray-800 dark:text-gray-400;
+    @apply text-gray-800 ;
+  }
+
+  .dark .stat-title,
+  .dark .stat-desc,
+  .dark th {
+    @apply text-gray-400 ;
   }
 }
