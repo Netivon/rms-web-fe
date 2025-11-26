@@ -161,7 +161,7 @@ export class LandlordDashboardComponent implements OnInit {
 
   // Navigation Items matching the new Interface
   myNavItems: MenuItem[] = [
-    { id: '1', label: 'Dashaboard', route: '/landlord/dashboard' },
+    { id: '1', label: 'Dashboard', route: '/landlord/dashboard' },
     { id: '2', label: 'Properties', route: '/landlord/propeties' },
     { id: '3', label: 'Tenants', route: '/tenants' },
     { id: '4', label: 'Settings', route: '/settings' },
