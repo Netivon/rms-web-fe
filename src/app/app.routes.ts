@@ -12,6 +12,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { LandlordDashboardComponent } from './pages/LANDLORD/landlord-dashboard/landlord-dashboard.component';
 import { PropertiesListComponent } from './pages/LANDLORD/properties-list/properties-list.component';
 import { LandlordTenanciesComponent } from './pages/LANDLORD/landlord-tenancies/landlord-tenancies.component';
+import { LandlordPaymentsComponent } from './pages/LANDLORD/landlord-payments/landlord-payments.component';
 
 export const routes: Routes = [
 //   { path: '', component: HomeComponent }, // Default route
@@ -26,6 +27,7 @@ export const routes: Routes = [
   { path: 'landlord/dashboard', component: LandlordDashboardComponent },
   { path: 'landlord/propeties', component: PropertiesListComponent },
   { path: 'landlord/tenancies', component: LandlordTenanciesComponent },
+  { path: 'landlord/payments', component: LandlordPaymentsComponent },
   { path: '**', redirectTo: 'login' },
 ];
 

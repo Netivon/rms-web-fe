@@ -232,7 +232,7 @@ export class PropertiesListComponent implements OnInit {
     { id: '1', label: 'Dashboard', route: '/landlord/dashboard' },
     { id: '2', label: 'Properties', route: '/landlord/propeties' },
     { id: '3', label: 'Tenants', route: '/landlord/tenancies' },
-    { id: '4', label: 'Settings', route: '/settings' },
+    { id: '4', label: 'Payments', route: '/landlord/payments' },
   ];
 
   // mock user
