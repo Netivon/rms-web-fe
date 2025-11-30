@@ -4,7 +4,6 @@ on:
   push:
     branches: [ "UAT_VERIFICATION" ]
 
-# Grant permission to create Pull Requests
 permissions:
   contents: write
   pull-requests: write
@@ -30,7 +29,6 @@ jobs:
       - name: Build Application
         run: npm run build
 
-      # --- STEP: Create PR (UAT_VERIFICATION -> UAT) ---
       - name: Create Pull Request
         if: success()
         env:
@@ -43,5 +41,5 @@ jobs:
             --body "Automated PR created after successful build and test validation on UAT_VERIFICATION branch." \
             --label "ready-for-deployment" \
             --reviewer "mirulnorazmi" \
-            --assign "mirulnorazmi" \
+            --assignee "mirulnorazmi" \
             || echo "PR already exists or no changes to merge."
