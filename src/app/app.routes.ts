@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { provideRouter} from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { ApplicationConfig } from '@angular/core';
 import { RegisterComponent } from './pages/register/register.component';
@@ -13,10 +13,11 @@ import { LandlordDashboardComponent } from './pages/LANDLORD/landlord-dashboard/
 import { PropertiesListComponent } from './pages/LANDLORD/properties-list/properties-list.component';
 import { LandlordTenanciesComponent } from './pages/LANDLORD/landlord-tenancies/landlord-tenancies.component';
 import { LandlordPaymentsComponent } from './pages/LANDLORD/landlord-payments/landlord-payments.component';
+import { NotFoundComponent } from './pages/404/not-found.component';
 
 export const routes: Routes = [
-//   { path: '', component: HomeComponent }, // Default route
-{ path: 'login', component: LoginComponent },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'properties', component: PropertiesComponent },
@@ -28,11 +29,9 @@ export const routes: Routes = [
   { path: 'landlord/propeties', component: PropertiesListComponent },
   { path: 'landlord/tenancies', component: LandlordTenanciesComponent },
   { path: 'landlord/payments', component: LandlordPaymentsComponent },
-  { path: '**', redirectTo: 'login' },
+  { path: '**', component: NotFoundComponent }
 ];
 
 export const appConfig: ApplicationConfig = {
-  providers: [
-    provideRouter(routes),
-  ],
+  providers: [provideRouter(routes)],
 };
