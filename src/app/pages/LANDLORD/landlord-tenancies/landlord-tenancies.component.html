@@ -1,0 +1,263 @@
+<app-main-layout
+  [menuItems]="myNavItems"
+  [currentUser]="currentUser()"
+  [currentView]="'tenancies'"
+  (logout)="logout()"
+  (viewSelect)="setView($event)">
+    
+  <div class="container mx-auto p-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold">Tenancies Management</h1>
+      <button class="btn btn-primary" (click)="startNewTenancy()">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+        New Tenancy
+      </button>
+    </div>
+
+    <!-- Filters -->
+    <div class="card bg-base-200 shadow-sm mb-6">
+      <div class="card-body rounded-lg">
+        <div class="flex flex-col md:flex-row gap-4">
+          <!-- Status Filter -->
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text font-semibold">Status Filter</span>
+            </label>
+            <select class="select select-bordered" [(ngModel)]="statusFilter">
+              <option value="all">All Tenancies</option>
+              <option value="ACTIVE">Active</option>
+              <option value="UPCOMING">Upcoming</option>
+              <option value="ENDED">Ended</option>
+            </select>
+          </div>
+
+          <!-- Search -->
+          <div class="form-control flex-1">
+            <label class="label">
+              <span class="label-text font-semibold">Search</span>
+            </label>
+            <input 
+              type="text" 
+              placeholder="Search by property address or tenant name..." 
+              class="input input-bordered"
+              [(ngModel)]="searchTerm">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tenancies List -->
+    <div class="grid gap-6">
+      <div *ngFor="let tenancy of filteredTenancies" class="card bg-base-100 shadow-lg">
+        <div class="card-body rounded-lg">
+          <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+            <!-- Tenancy Info -->
+            <div class="flex-1">
+              <div class="flex items-center gap-3 mb-2">
+                <h2 class="card-title text-xl">
+                  {{ getPropertyForTenancy(tenancy)?.address }}
+                </h2>
+                <div [class]="getStatusBadgeClass(tenancy.status)">
+                  {{ tenancy.status | lowercase | titlecase }}
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                <div class="flex items-center gap-2">
+                  <div class="avatar">
+                    <div class="w-8 h-8 rounded-full">
+                      <!-- <img [src]="getTenantAvatar(tenancy.tenant)" [alt]="tenancy.tenant?.name" /> -->
+                    </div>
+                  </div>
+                  <div>
+                    <span class="font-semibold">Tenant:</span>
+                    <p>{{ getTenantForTenancy(tenancy)?.name }}</p>
+                  </div>
+                </div>
+                <div>
+                  <span class="font-semibold">Lease Period:</span>
+                  <p>{{ tenancy.lease_start | date:'mediumDate' }} - {{ tenancy.lease_end | date:'mediumDate' }}</p>
+                </div>
+                <div>
+                  <span class="font-semibold">Duration:</span>
+                  <p>{{ calculateLeaseDuration(tenancy.lease_start, tenancy.lease_end) }} months</p>
+                </div>
+                <div>
+                  <span class="font-semibold">Rent:</span>
+                  <div class="flex items-center gap-2">
+                    <span class="font-bold text-lg">{{ formatCurrency(tenancy.rent_amount) }}</span>
+                    <span *ngIf="checkRentIncrease(tenancy)" class="badge badge-warning">
+                      ↑ {{ getRentIncreasePercentage(tenancy) | number:'1.0-1' }}%
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex gap-2">
+              <button *ngIf="tenancy.status === 'ACTIVE'" class="btn btn-outline btn-sm" (click)="renewTenancy(tenancy)">
+                Renew
+              </button>
+              <button class="btn btn-ghost btn-sm" (click)="viewTenancyHistory(tenancy.property_id)">
+                View History
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="filteredTenancies.length === 0" class="text-center py-12">
+        <div class="text-6xl mb-4">🏠</div>
+        <h3 class="text-xl font-semibold mb-2">No tenancies found</h3>
+        <p class="text-base-content/70 mb-4">Try adjusting your filters or create a new tenancy.</p>
+        <button class="btn btn-primary" (click)="startNewTenancy()">
+          Create New Tenancy
+        </button>
+      </div>
+    </div>
+
+    <!-- New Tenancy Wizard Modal -->
+    <div *ngIf="showNewTenancyWizard" class="modal modal-open">
+      <div class="modal-box max-w-2xl">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-2xl font-bold">Create New Tenancy</h3>
+          <button class="btn btn-ghost btn-sm" (click)="cancelNewTenancy()">✕</button>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="steps steps-horizontal w-full mb-8">
+          <div class="step" [ngClass]="{'step-primary': wizardStep >= 1}">Property</div>
+          <div class="step" [ngClass]="{'step-primary': wizardStep >= 2}">Tenant</div>
+          <div class="step" [ngClass]="{'step-primary': wizardStep >= 3}">Lease Details</div>
+        </div>
+
+        <!-- Step 1: Property Selection -->
+        <div *ngIf="wizardStep === 1" class="space-y-4">
+          <h4 class="text-lg font-semibold">Select Property</h4>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text font-semibold">Property</span>
+            </label>
+            <select class="select select-bordered" [(ngModel)]="newTenancy.property_id">
+              <option value="">Choose a property</option>
+              <option *ngFor="let property of properties" [value]="property.id">
+                {{ property.address }} - {{ formatCurrency(property.default_rent_amount) }}/month
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Step 2: Tenant Selection -->
+        <div *ngIf="wizardStep === 2" class="space-y-4">
+          <h4 class="text-lg font-semibold">Select Tenant</h4>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text font-semibold">Tenant</span>
+            </label>
+            <select class="select select-bordered" [(ngModel)]="newTenancy.tenant_id">
+              <option value="">Choose a tenant</option>
+              <option *ngFor="let tenant of tenants" [value]="tenant.id">
+                <div class="flex items-center gap-2">
+                  <div class="avatar">
+                    <div class="w-6 h-6 rounded-full">
+                      <img [src]="tenant.avatar" [alt]="tenant.name" />
+                    </div>
+                  </div>
+                  {{ tenant.name }} ({{ tenant.email }})
+                </div>
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Step 3: Lease Details -->
+        <div *ngIf="wizardStep === 3" class="space-y-4">
+          <h4 class="text-lg font-semibold">Lease Details</h4>
+          
+          <!-- Rent Increase Alert -->
+          <div *ngIf="showRentIncreaseAlert && rentIncreaseDetails" class="alert alert-warning">
+            <div>
+              <span class="font-semibold">Rent Increase Detected!</span>
+              <p class="text-sm">
+                Previous rent: {{ formatCurrency(rentIncreaseDetails.previous) }} → New rent: {{ formatCurrency(rentIncreaseDetails.current) }}
+                ({{ rentIncreaseDetails.percentage | number:'1.0-1' }}% increase)
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text font-semibold">Lease Start</span>
+              </label>
+              <input 
+                type="date" 
+                class="input input-bordered"
+                [(ngModel)]="newTenancy.lease_start">
+            </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text font-semibold">Lease End</span>
+              </label>
+              <input 
+                type="date" 
+                class="input input-bordered"
+                [(ngModel)]="newTenancy.lease_end">
+            </div>
+          </div>
+
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text font-semibold">Monthly Rent Amount</span>
+            </label>
+            <input 
+              type="number" 
+              class="input input-bordered"
+              placeholder="Enter monthly rent"
+              [(ngModel)]="newTenancy.rent_amount"
+              (input)="checkNewTenancyRentIncrease()">
+          </div>
+
+          <!-- Lease Duration Preview -->
+          <div *ngIf="newTenancy.lease_start && newTenancy.lease_end" class="bg-base-200 rounded-lg p-4">
+            <p class="font-semibold">Lease Duration:</p>
+            <p>{{ calculateLeaseDuration(newTenancy.lease_start, newTenancy.lease_end) }} months</p>
+          </div>
+        </div>
+
+        <!-- Wizard Navigation -->
+        <div class="modal-action justify-between">
+          <div>
+            <button *ngIf="wizardStep > 1" class="btn btn-ghost" (click)="previousStep()">
+              Previous
+            </button>
+          </div>
+          <div class="flex gap-2">
+            <button class="btn btn-ghost" (click)="cancelNewTenancy()">Cancel</button>
+            <button 
+              *ngIf="wizardStep < 3" 
+              class="btn btn-primary" 
+              (click)="nextStep()"
+              [disabled]="!canProceedToNextStep()">
+              Next
+            </button>
+            <button 
+              *ngIf="wizardStep === 3" 
+              class="btn btn-success" 
+              (click)="createTenancy()"
+              [disabled]="!canCreateTenancy()">
+              Create Tenancy
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-main-layout>
