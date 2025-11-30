@@ -4,24 +4,29 @@
     <div class="card-body p-6 sm:p-8">
       <h2 class="card-title text-2xl sm:text-3xl font-bold text-center text-gray-800 dark:text-white mb-6">Login</h2>
       
-      <form class="space-y-4">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
+        
+        <div *ngIf="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded relative text-sm">
+          {{ errorMessage }}
+        </div>
+
         <div>
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
           <input 
+            formControlName="email"
             type="email" 
             placeholder="Enter your email" 
             class="input input-bordered w-full px-4 py-2 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition" 
-            required
           />
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Password</label>
           <input 
+            formControlName="password"
             type="password" 
             placeholder="Enter your password" 
             class="input input-bordered w-full px-4 py-2 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition" 
-            required
           />
         </div>
 
