@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LandlordPaymentsComponent } from './landlord-payments.component';
+import { provideRouter } from '@angular/router';
 
 describe('LandlordPaymentsComponent', () => {
   let component: LandlordPaymentsComponent;
@@ -8,9 +9,9 @@ describe('LandlordPaymentsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LandlordPaymentsComponent]
-    })
-    .compileComponents();
+      imports: [LandlordPaymentsComponent],
+      providers: [provideRouter([])],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(LandlordPaymentsComponent);
     component = fixture.componentInstance;
