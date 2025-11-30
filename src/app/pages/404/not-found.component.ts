@@ -23,7 +23,7 @@ import { RouterLink } from '@angular/router';
       
       <h2 class="text-3xl md:text-4xl font-bold mt-4 mb-2">Page Not Found</h2>
       <p class="text-gray-600 dark:text-gray-400 text-lg text-center max-w-md mb-8">
-        Oops! The page you are looking for doesn't exist yet or has been moved.
+        Oops..! The page you are looking for doesn't exist yet or has been moved.
       </p>
 
       <!-- Action Buttons -->
