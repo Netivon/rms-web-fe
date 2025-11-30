@@ -1,0 +1,318 @@
+<!-- landlord-payments.component.html -->
+<app-main-layout
+ [menuItems]="myNavItems"
+  [currentUser]="currentUser()"
+  [currentView]="'payments'"
+  (logout)="logout()"
+  (viewSelect)="setView($event)">
+  <div class="container mx-auto p-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold">Payments Tracking</h1>
+      <div class="flex gap-2">
+        <button class="btn btn-outline" (click)="generateRevenueReport()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+            class="w-6 h-6"
+            >
+            <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"
+            />
+            <path d="M14 2v6h6" />
+            <path d="M9 13h6M9 17h6" />
+            </svg>
+          Revenue Report
+        </button>
+        <button class="btn btn-outline" (click)="exportToCSV()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="w-6 h-6"
+            >
+            <path d="M4 22h16" />
+            <path d="M6 18v-6" />
+            <path d="M10 18v-10" />
+            <path d="M14 18v-3" />
+            <path d="M18 18v-8" />
+            <path d="M14 2h6v6" />
+            <path d="M14 2l6 6" />
+            </svg>
+          Export CSV
+        </button>
+        <button class="btn btn-primary" (click)="showGeneratePaymentsModal = true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <title>Money</title>
+            <rect x="2" y="6" width="20" height="12" rx="2" />
+            <circle cx="12" cy="12" r="3" />
+            <path d="M4 9h.01M4 15h.01M20 9h.01M20 15h.01" />
+            </svg>
+          Generate Payments
+        </button>
+      </div>
+    </div>
+
+    <!-- Statistics Dashboard -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="stat bg-base-100 rounded-lg shadow-sm">
+        <div class="stat-figure text-primary">
+          <i class="fas fa-dollar-sign text-3xl"></i>
+        </div>
+        <div class="stat-title">Total Revenue</div>
+        <div class="stat-value text-primary">{{ formatCurrency(stats.totalRevenue) }}</div>
+        <div class="stat-desc">All time collected</div>
+      </div>
+
+      <div class="stat bg-base-100 rounded-lg shadow-sm">
+        <div class="stat-figure text-warning">
+          <i class="fas fa-clock text-3xl"></i>
+        </div>
+        <div class="stat-title">Pending Payments</div>
+        <div class="stat-value text-warning">{{ stats.pendingPayments }}</div>
+        <div class="stat-desc">Awaiting payment</div>
+      </div>
+
+      <div class="stat bg-base-100 rounded-lg shadow-sm">
+        <div class="stat-figure text-error">
+          <i class="fas fa-exclamation-triangle text-3xl"></i>
+        </div>
+        <div class="stat-title">Overdue Payments</div>
+        <div class="stat-value text-error">{{ stats.overduePayments }}</div>
+        <div class="stat-desc">Require attention</div>
+      </div>
+
+      <div class="stat bg-base-100 rounded-lg shadow-sm">
+        <div class="stat-figure text-success">
+          <i class="fas fa-calendar-check text-3xl"></i>
+        </div>
+        <div class="stat-title">This Month</div>
+        <div class="stat-value text-success">{{ formatCurrency(stats.collectedThisMonth) }}</div>
+        <div class="stat-desc">Current month revenue</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card bg-base-200 shadow-sm mb-6">
+      <div class="card-body">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Status Filter -->
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text font-semibold">Status</span>
+            </label>
+            <select class="select select-bordered" [(ngModel)]="statusFilter">
+              <option value="all">All Statuses</option>
+              <option value="PENDING">Pending</option>
+              <option value="PAID">Paid</option>
+              <option value="OVERDUE">Overdue</option>
+            </select>
+          </div>
+
+          <!-- Property Filter -->
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text font-semibold">Property</span>
+            </label>
+            <select class="select select-bordered" [(ngModel)]="propertyFilter">
+              <option value="all">All Properties</option>
+              <option *ngFor="let property of properties" [value]="property.id">
+                {{ property.address }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Month Filter -->
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text font-semibold">Month</span>
+            </label>
+            <select class="select select-bordered" [(ngModel)]="monthFilter">
+              <option value="">All Months</option>
+              <option *ngFor="let month of availableMonths" [value]="month">
+                {{ formatMonth(month) }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Search -->
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text font-semibold">Search</span>
+            </label>
+            <input 
+              type="text" 
+              placeholder="Search by tenant or property..." 
+              class="input input-bordered"
+              [(ngModel)]="searchTerm">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payments List -->
+    <div class="grid gap-4">
+      <div *ngFor="let payment of filteredPayments" class="card bg-base-100 shadow-lg border-l-4" 
+           [class.border-warning]="payment.status === 'PENDING'"
+           [class.border-error]="payment.status === 'OVERDUE'"
+           [class.border-success]="payment.status === 'PAID'">
+        <div class="card-body">
+          <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+            <!-- Payment Info -->
+            <div class="flex-1">
+              <div class="flex items-center gap-3 mb-2">
+                <h2 class="card-title text-lg">
+                  {{ formatCurrency(payment.amount) }}
+                  <span class="text-sm font-normal text-gray-500 ml-2">
+                    {{ formatMonth(payment.month) }}
+                  </span>
+                </h2>
+                <div [class]="getStatusBadgeClass(payment.status)">
+                  {{ payment.status }}
+                  <span *ngIf="isOverdue(payment)" class="ml-1">
+                    ({{ getDaysOverdue(payment) }} days)
+                  </span>
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                <div class="flex items-center gap-2">
+                  <div class="avatar">
+                    <div class="w-8 h-8 rounded-full">
+                      <img
+                        src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp"
+                        class="w-9 h-9 rounded-full border-2 border-gray-100 object-cover"/>
+                    </div>
+                  </div>
+                  <div>
+                    <span class="font-semibold">Tenant:</span>
+                    <p>{{ getTenantName(getTenancyForPayment(payment)?.tenant_id || '') }}</p>
+                  </div>
+                </div>
+                
+                <div>
+                  <span class="font-semibold">Property:</span>
+                  <p>{{ getPropertyForTenancy(getTenancyForPayment(payment))?.address }}</p>
+                </div>
+                
+                <div>
+                  <span class="font-semibold">Due Date:</span>
+                  <p>{{ payment.due_date | date:'mediumDate' }}</p>
+                </div>
+
+                <div *ngIf="payment.paid_date">
+                  <span class="font-semibold">Paid Date:</span>
+                  <p>{{ payment.paid_date | date:'mediumDate' }}</p>
+                </div>
+
+                <div *ngIf="!payment.paid_date && payment.status === 'PENDING'">
+                  <span class="font-semibold">Status:</span>
+                  <p class="text-warning">Awaiting Payment</p>
+                </div>
+
+                <div *ngIf="payment.status === 'OVERDUE'">
+                  <span class="font-semibold">Overdue By:</span>
+                  <p class="text-error">{{ getDaysOverdue(payment) }} days</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex gap-2">
+              <button 
+                *ngIf="payment.status === 'PENDING' || payment.status === 'OVERDUE'" 
+                class="btn btn-success btn-sm"
+                (click)="markAsPaid(payment)">
+                Mark Paid
+              </button>
+              <button class="btn btn-ghost btn-sm">
+                <i class="fas fa-receipt"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="filteredPayments.length === 0" class="text-center py-12">
+        <div class="text-6xl mb-4">💳</div>
+        <h3 class="text-xl font-semibold mb-2">No payments found</h3>
+        <p class="text-base-content/70 mb-4">Try adjusting your filters or generate new payments.</p>
+        <button class="btn btn-primary" (click)="showGeneratePaymentsModal = true">
+          Generate Payments
+        </button>
+      </div>
+    </div>
+
+    <!-- Generate Payments Modal -->
+    <div *ngIf="showGeneratePaymentsModal" class="modal modal-open">
+      <div class="modal-box">
+        <h3 class="font-bold text-lg mb-4">Generate Monthly Payments</h3>
+        <p class="mb-6">This will create payment records for all active tenancies for the next month.</p>
+        
+        <div class="bg-warning/20 p-4 rounded-lg mb-6">
+          <div class="flex items-center gap-2">
+            <i class="fas fa-exclamation-triangle text-warning"></i>
+            <span class="font-semibold">Affected Tenancies:</span>
+          </div>
+          <ul class="mt-2 space-y-1">
+            <li *ngFor="let tenancy of activeTenancies" class="text-sm">
+              • {{ getPropertyForTenancy(tenancy)?.address }} - {{ formatCurrency(tenancy.rent_amount) }}
+            </li>
+          </ul>
+        </div>
+
+        <div class="modal-action">
+          <button class="btn btn-ghost" (click)="showGeneratePaymentsModal = false">Cancel</button>
+          <button class="btn btn-primary" (click)="generateMonthlyPayments()">
+            Generate Payments
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mark Payment as Paid Modal -->
+    <div *ngIf="showPaymentModal" class="modal modal-open">
+      <div class="modal-box">
+        <h3 class="font-bold text-lg mb-4">Mark Payment as Paid</h3>
+        
+        <div *ngIf="selectedPayment" class="space-y-4">
+          <div class="bg-base-200 p-4 rounded-lg">
+            <p><strong>Amount:</strong> {{ formatCurrency(selectedPayment.amount) }}</p>
+            <p><strong>Month:</strong> {{ formatMonth(selectedPayment.month) }}</p>
+            <p><strong>Tenant:</strong> {{ getTenantName(getTenancyForPayment(selectedPayment)?.tenant_id || '') }}</p>
+            <p><strong>Property:</strong> {{ getPropertyForTenancy(getTenancyForPayment(selectedPayment))?.address }}</p>
+          </div>
+
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text font-semibold">Payment Date</span>
+            </label>
+            <input 
+              type="date" 
+              class="input input-bordered"
+              [(ngModel)]="newPayment.paid_date">
+          </div>
+
+        </div>
+
+        <div class="modal-action">
+          <button class="btn btn-ghost" (click)="closePaymentModal()">Cancel</button>
+          <button class="btn btn-success" (click)="confirmPayment()" 
+                  [disabled]="!newPayment.paid_date">
+            Confirm Payment
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-main-layout>
